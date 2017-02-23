@@ -1,6 +1,6 @@
 import pygame
 class Ship():
-    def __init__(self,screen):
+    def __init__(self,ai_settings,screen):
         """初始化飞船的位置"""
         self.screen = screen
         #加载飞船图像并获取外接矩形
@@ -17,6 +17,10 @@ class Ship():
         self.moving_up = False
         self.moving_down = False
         
+        self.ai_settings = ai_settings
+        self.center_x = float(self.rect.centerx)
+        
+        
     def blitme(self):
         """在指定位置绘制飞船"""
         self.screen.blit(self.image, self.rect)
@@ -24,18 +28,15 @@ class Ship():
     def update(self):
         """move depend on ship pos"""
         if self.moving_right:
-            self.rect.centerx += 1
-            if self.rect.centerx > self.screen_rect.right:
-                self.rect.centerx = self.screen_rect.left
+            if self.rect.right < self.screen_rect.right:  
+                self.center_x += self.ai_settings.ship_speed_factor
         elif self.moving_left:
-            self.rect.centerx -= 1  
-            if self.rect.centerx < self.screen_rect.left:
-                self.rect.centerx = self.screen_rect.right
+            if self.rect.left > self.screen_rect.left:
+                self.center_x -=  self.ai_settings.ship_speed_factor 
         elif self.moving_up:
-            self.rect.top -= 1
-            if self.rect.top < 0:
-                self.rect.top = 0
+            if self.rect.top > self.screen_rect.top:
+                self.rect.top -= self.ai_settings.ship_speed_factor
         elif self.moving_down:
-            self.rect.bottom += 1
-            if self.rect.bottom > self.screen_rect.height:
-                self.rect.bottom = self.screen_rect.height       
+            if self.rect.bottom < self.screen_rect.bottom:  
+                self.rect.bottom += self.ai_settings.ship_speed_factor
+        self.rect.centerx = self.center_x     
