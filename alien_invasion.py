@@ -20,13 +20,14 @@ def run_game():
     bg_color = ai_settings.bg_color
     
     #alien = Alien(ai_settings,screen)
-    gf.create_fleet(ai_settings,screen,aliens)
+    gf.create_fleet(ai_settings,screen,ship,aliens)
     
     #开始游戏的主循环
     while True:
         gf.check_events(ai_settings,screen,ship,bullets)
         ship.update()
         gf.update_bullets(bullets)
+        gf.update_aliens(ai_settings,aliens)
         #print(len(bullets))
         
         gf.update_screen(ai_settings,screen,ship,aliens,bullets)

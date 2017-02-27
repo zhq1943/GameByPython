@@ -17,6 +17,7 @@ def check_keydown_events(event,ai_settings,screen,ship,bullets):
          fire_bullet(ai_settings,screen,ship,bullets)
      elif event.key == pygame.K_q:
          sys.exit()    
+         
 def check_keyup_events(event,ai_settings,screen,ship,bullets):
      if event.key == pygame.K_RIGHT:
          ship.moving_right = False
@@ -66,19 +67,41 @@ def get_number_aliens_x(ai_settings,alien_width):
     number_aliens_x = int(available_space_x/(2*alien_width))
     return number_aliens_x  
     
-def create_alien(ai_settings,screen,aliens,alien_number):
+def get_number_rows(ai_settings,ship_height,alien_height):
+    """计算外星人行数"""
+    available_space_y = (ai_settings.screen_height - (3*alien_height) - ship_height)
+    number_rows = int(available_space_y/(2*alien_height))
+    return number_rows  
+      
+def create_alien(ai_settings,screen,aliens,alien_number,row_number):
     """create alien"""    
     alien = Alien(ai_settings,screen)
     alien_width = alien.rect.width  
     alien.x = alien_width + 2*alien_width*alien_number
     alien.rect.x = alien.x
+    alien.rect.y = alien.rect.height + 2*alien.rect.height*row_number
     aliens.add(alien) 
         
-def create_fleet(ai_settings, screen,aliens):
-
+def create_fleet(ai_settings, screen,ship,aliens):
     alien = Alien(ai_settings,screen)
     number_aliens_x = get_number_aliens_x(ai_settings,alien.rect.width)
-     
-    for alien_number in range(number_aliens_x):
-        create_alien(ai_settings,screen,aliens,alien_number)
+    number_aliens_y = get_number_rows(ai_settings, ship.rect.height*ai_settings.ship_space_times_self, alien.rect.height)
+    for row_number in range(number_aliens_y): 
+        for alien_number in range(number_aliens_x):
+            create_alien(ai_settings,screen,aliens,alien_number,row_number)
            
+def update_aliens(ai_settings,aliens):
+    check_fleet_edges(ai_settings,aliens)
+    aliens.update()
+    
+def check_fleet_edges(ai_settings, aliens):
+    """有外星人 到达边缘 """
+    for alien in aliens.sprites():
+        if alien.check_edges():
+            change_fleet_direction(ai_settings, aliens)
+            break
+            
+def change_fleet_direction(ai_settings, aliens):
+    for alien in aliens.sprites():
+        alien.rect.y += ai_settings.fleet_drop_speed
+    ai_settings.fleet_direction *= -1               
