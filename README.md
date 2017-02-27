@@ -1,2 +1,4 @@
-# GameByPython
- base on python user pygame  mode create a shooting game
+# Alien Shooting
+based on python3.2
+pygame-1.90a0python3.2
+ 
