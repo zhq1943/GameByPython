@@ -20,7 +20,7 @@ class Ship():
         self.ai_settings = ai_settings
         self.center_x = float(self.rect.centerx)
         
-        
+        self.on_fire = False
     def blitme(self):
         """在指定位置绘制飞船"""
         self.screen.blit(self.image, self.rect)

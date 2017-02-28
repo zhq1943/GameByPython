@@ -15,6 +15,7 @@ class Bullet(Sprite):
         
         self.color = ai_settings.bullet_color
         self.speed_factor = ai_settings.bullet_speed_factor
+        self.distance = ai_settings.bullet_distance
         
     def update(self):
         """up"""
@@ -22,4 +23,5 @@ class Bullet(Sprite):
         self.rect.y = self.y
         
     def draw_bullet(self):
-        pygame.draw.rect(self.screen,self.color,self.rect)
+        #pygame.draw.rect(self.screen,self.color,self.rect)
+        pygame.draw.circle(self.screen,self.color,(int(self.rect.centerx),int(self.rect.top)),int(self.rect.width/2))
