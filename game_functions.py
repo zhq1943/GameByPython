@@ -1,6 +1,7 @@
 import sys ,pygame
 from bullet import Bullet
 from alien import Alien
+from time import sleep
 
 def check_keydown_events(event,ai_settings,screen,ship,bullets):
      """响应按键和鼠标事件"""
@@ -102,9 +103,14 @@ def create_fleet(ai_settings, screen,ship,aliens):
         for alien_number in range(number_aliens_x):
             create_alien(ai_settings,screen,aliens,alien_number,row_number)
            
-def update_aliens(ai_settings,aliens):
+def update_aliens(ai_settings,stats,screen,ship,aliens,bullets):
     check_fleet_edges(ai_settings,aliens)
     aliens.update()
+    #检查精灵和编组之间是否有碰撞，有则停止返回第一个碰撞的外星人
+    if pygame.sprite.spritecollideany(ship,aliens):
+        ship_hit(ai_settings,stats,screen,ship,aliens,bullets)
+        
+    check_aliens_bottom(ai_settings,stats,screen,ship,aliens,bullets)    
     
 def check_fleet_edges(ai_settings, aliens):
     """有外星人 到达边缘 """
@@ -130,4 +136,30 @@ def check_bullet_alien_collisions(ai_settings,screen,ship,aliens,bullets):
     if len(aliens) == 0:
         bullets.empty()
         create_fleet(ai_settings,screen,ship,aliens)     
+        
+def ship_hit(ai_settings, stats,screen,ship,aliens,bullets):
+    if stats.ships_left > 0:
+        #reduce ship number
+        stats.ships_left -= 1
+        #clear aliens and bullets
+        aliens.empty()
+        bullets.empty()
+        #create new aliens
+        create_fleet(ai_settings,screen,ship,aliens)
+        #move ship to satat position
+        ship.center_ship()
+    
+        sleep(0.5)
+    else:
+        stats.game_active = False    
+    
+def check_aliens_bottom(ai_settings,stats,screen,ship,aliens,bullets):
+    """检查是否有外星人到达屏幕底端""" 
+    screen_rect = screen.get_rect()
+    for alien in aliens.sprites():
+        if alien.rect.bottom >= screen_rect.bottom:
+            
+            ship_hit(ai_settings,stats,screen,ship,aliens,bullets)
+            break
+               
           

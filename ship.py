@@ -40,3 +40,7 @@ class Ship():
             if self.rect.bottom < self.screen_rect.bottom:  
                 self.rect.bottom += self.ai_settings.ship_speed_factor
         self.rect.centerx = self.center_x     
+    def center_ship(self):
+        """move ship to start position"""
+        self.center  = self.screen_rect.centerx
+        self.rect.bottom = self.screen_rect.bottom
