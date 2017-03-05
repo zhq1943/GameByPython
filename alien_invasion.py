@@ -5,6 +5,7 @@ import game_functions as gf
 from pygame.sprite import Group
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 
 #from alien import Alien
 def run_game():
@@ -17,6 +18,7 @@ def run_game():
     
     play_button = Button(ai_settings, screen, "Play")
     stats = GameStats(ai_settings)
+    sb = Scoreboard(ai_settings, screen, stats)
     ship = Ship(ai_settings,screen)
     
     bullets = Group()
@@ -27,17 +29,18 @@ def run_game():
     #alien = Alien(ai_settings,screen)
     gf.create_fleet(ai_settings,screen,ship,aliens)
     
-    play_button.draw_button()
+    gf.update_screen(ai_settings,screen,stats,sb,ship,aliens,bullets,play_button)
+    pygame.display.flip()
     #开始游戏的主循环
     while True:
-        gf.check_events(ai_settings,screen,stats,play_button,ship,aliens,bullets)
+        gf.check_events(ai_settings,screen,stats,sb,play_button,ship,aliens,bullets)
         if stats.game_active:
             
             ship.update()
-            gf.update_bullets(ai_settings,screen,ship,bullets,aliens)
-            gf.update_aliens(ai_settings,stats,screen,ship,aliens,bullets)
+            gf.update_bullets(ai_settings,screen,sb,stats,ship,bullets,aliens)
+            gf.update_aliens(ai_settings,stats,sb,screen,ship,aliens,bullets)
             #print(len(bullets))
-            gf.update_screen(ai_settings,screen,stats,ship,aliens,bullets,play_button)
+            gf.update_screen(ai_settings,screen,stats,sb,ship,aliens,bullets,play_button)
         
             
 run_game()
